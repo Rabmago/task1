@@ -3,70 +3,98 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
-use http\Env\Request;
-use Illuminate\Database\Eloquent;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class NewsController extends Controller
 {
-    /**
-     * @mixin Eloquent\
-     * @mixin Builder
-     */
-
     public function index()
     {
-        $data = News::all();
-        return response()->json([
-           'data' => $data
-        ]);
+        try {
+            $data = News::all();
+            return response()->json([
+                'data' => $data
+            ]);
+        } catch (\Exception $exception) {
+            Log::error(__METHOD__ . ' error ' . $exception->getMessage());
+        }
+
     }
 
-
-
-    public function create(\Illuminate\Http\Request $request)
+    public function create(Request $request)
     {
-        $news = new News();
-        $news->image = $request->image;
-        $news->header = $request->header;
-        $news->description = $request->description;
+        try {
+            $news = new News();
+            $news->image = $request->image;
+            $news->header = $request->header;
+            $news->description = $request->description;
+            $news->save();
 
-        $news->save();
-        return response()->json([
-            'message' => 'News created successfully'
-        ]);
+            return response()->json([
+                'message' => 'News created successfully'
+            ]);
+        } catch (\Exception $exception) {
+            Log::error(__METHOD__ . ' error ' . $exception->getMessage());
+            return response()->json([
+                'message' => 'Something wrong when news was creating'
+            ]);
+        }
+
     }
 
     public function findById( int $id)
     {
-        $data = News::findOrFail($id);
-        return response()->json([
-            'data' => $data
-        ]);
+        try {
+            $data = News::findOrFail($id);
+            return response()->json([
+                'data' => $data
+            ]);
+        } catch (\Exception $exception) {
+            Log::error(__METHOD__ . ' error ' . $exception->getMessage());
+            return response()->json([
+                'message' => 'News cannot be displayed'
+            ]);
+        }
+
     }
 
 
 
-    public function update(\Illuminate\Http\Request $request, int $id)
+    public function update(Request $request, int $id)
     {
-        $news = News::findOrFail($id);
-        $news->image = $request->image;
-        $news->header = $request->header;
-        $news->description = $request->description;
+        try {
+            $news = News::findOrFail($id);
+            $news->image = $request->image;
+            $news->header = $request->header;
+            $news->description = $request->description;
+            $news->save();
+            return response()->json([
+                'message' => 'News updated successfully'
+            ]);
+        } catch (\Exception $exception) {
+            Log::error(__METHOD__ . ' error ' . $exception->getMessage());
+            return response()->json([
+                'message' => 'News was not updated'
+            ]);
+        }
 
-        $news->save();
-        return response()->json([
-            'message' => 'News updated successfully'
-        ]);
     }
 
     public function delete( int $id)
     {
-        $news = News::findOrFail($id);
-        $news->delete();
-        return response()->json([
-            'message' => 'News deleted successfully'
-        ]);
+        try {
+            $news = News::findOrFail($id);
+            $news->delete();
+            return response()->json([
+                'message' => 'News deleted successfully'
+            ]);
+        } catch (\Exception $exception) {
+            Log::error(__METHOD__ . ' error ' . $exception->getMessage());
+            return response()->json([
+                'message' => 'News was not deleted'
+            ]);
+        }
+
     }
 
 

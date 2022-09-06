@@ -10,7 +10,4 @@ class News extends Model
         'header',
         'description'
     ];
-
-
-
 }
