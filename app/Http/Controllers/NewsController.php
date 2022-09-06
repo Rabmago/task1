@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
+use Dotenv\Exception\ValidationException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -29,7 +30,11 @@ class NewsController extends Controller
             $news->header = $request->header;
             $news->description = $request->description;
             $news->save();
-
+            $this->validate($request, [
+                'image' => 'nullable|string',
+                'header' => 'required|string|max:2000',
+                'description' => 'required|string'
+            ]);
             return response()->json([
                 'message' => 'News created successfully'
             ]);
@@ -68,6 +73,11 @@ class NewsController extends Controller
             $news->header = $request->header;
             $news->description = $request->description;
             $news->save();
+            $this->validate($request, [
+                'image' => 'nullable|string',
+                'header' => 'required|string|max:2000',
+                'description' => 'required|string'
+            ]);
             return response()->json([
                 'message' => 'News updated successfully'
             ]);
