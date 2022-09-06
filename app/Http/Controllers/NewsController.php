@@ -19,7 +19,6 @@ class NewsController extends Controller
         } catch (\Exception $exception) {
             Log::error(__METHOD__ . ' error ' . $exception->getMessage());
         }
-
     }
 
     public function create(Request $request)
@@ -29,15 +28,17 @@ class NewsController extends Controller
             $news->image = $request->image;
             $news->header = $request->header;
             $news->description = $request->description;
-            $news->save();
-            $this->validate($request, [
+            $rules = [
                 'image' => 'nullable|string',
                 'header' => 'required|string|max:2000',
                 'description' => 'required|string'
-            ]);
-            return response()->json([
-                'message' => 'News created successfully'
-            ]);
+            ];
+            if ($this->validate($request, $rules) == true) {
+                $news->save();
+                return response()->json([
+                    'message' => 'News created successfully'
+                ]);
+            }
         } catch (\Exception $exception) {
             Log::error(__METHOD__ . ' error ' . $exception->getMessage());
             return response()->json([
@@ -72,15 +73,17 @@ class NewsController extends Controller
             $news->image = $request->image;
             $news->header = $request->header;
             $news->description = $request->description;
-            $news->save();
-            $this->validate($request, [
+            $rules = [
                 'image' => 'nullable|string',
                 'header' => 'required|string|max:2000',
                 'description' => 'required|string'
-            ]);
-            return response()->json([
-                'message' => 'News updated successfully'
-            ]);
+            ];
+            if ($this->validate($request, $rules)) {
+                $news->save();
+                return response()->json([
+                    'message' => 'News updated successfully'
+                ]);
+            }
         } catch (\Exception $exception) {
             Log::error(__METHOD__ . ' error ' . $exception->getMessage());
             return response()->json([
